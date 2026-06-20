@@ -9,10 +9,10 @@ import {
 import { useState } from 'react'
 
 const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, key: 'nav.dashboard' },
-  { to: '/select',    icon: BookOpen,        key: 'nav.modules'   },
-  { to: '/progress',  icon: TrendingUp,      key: 'nav.progress'  },
-  { to: '/profile',   icon: User,            key: 'nav.profile'   },
+  { to: '/dashboard', icon: LayoutDashboard, labelKey: 'nav.dashboard' },
+  { to: '/select',    icon: BookOpen,        labelKey: 'nav.modules'   },
+  { to: '/progress',  icon: TrendingUp,      labelKey: 'nav.progress'  },
+  { to: '/profile',   icon: User,            labelKey: 'nav.profile'   },
 ]
 
 export default function AppLayout() {
