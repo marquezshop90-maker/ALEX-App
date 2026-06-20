@@ -1,0 +1,142 @@
+{
+  "app": {
+    "name": "ALEX",
+    "tagline": "Achieve the EXam",
+    "description": "California Contractor License B Exam Prep"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "modules": "Modules",
+    "progress": "Progress",
+    "profile": "Profile",
+    "admin": "Admin Panel",
+    "signout": "Sign Out"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Create Account",
+    "email": "Email Address",
+    "password": "Password",
+    "fullName": "Full Name",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "verifyEmail": "Please verify your email before continuing.",
+    "verifyEmailSent": "Check your inbox! We sent you a verification email.",
+    "loginBtn": "Sign In",
+    "registerBtn": "Create Free Account",
+    "orContinueWith": "or continue with"
+  },
+  "plans": {
+    "free": "Free",
+    "premium": "Premium",
+    "freeDesc": "Study content for all 31 modules",
+    "premiumDesc": "Full access: flashcards, exams, AI tutor & reports",
+    "price": "$29.99",
+    "perMonth": "/month",
+    "upgrade": "Upgrade to Premium",
+    "current": "Current Plan"
+  },
+  "exams": {
+    "bl": "Business & Law",
+    "trade": "Trade (Class B)",
+    "blDesc": "100 questions · 2.5 hours · 72% to pass",
+    "tradeDesc": "115 questions · 3.5 hours · 72% to pass",
+    "selectExam": "Choose Your Exam",
+    "modules": "Modules",
+    "startStudying": "Start Studying"
+  },
+  "modules": {
+    "notStarted": "Not Started",
+    "inProgress": "In Progress",
+    "completed": "Completed",
+    "lessons": "Lessons",
+    "flashcards": "Flashcards",
+    "miniExam": "Mini Exam",
+    "startLesson": "Start Lesson",
+    "nextLesson": "Next Lesson",
+    "complete": "Complete Module",
+    "references": "Official References",
+    "lastUpdated": "Last reviewed"
+  },
+  "exam": {
+    "start": "Start Exam",
+    "submit": "Submit Answer",
+    "next": "Next Question",
+    "finish": "Finish Exam",
+    "question": "Question",
+    "of": "of",
+    "timeLeft": "Time Left",
+    "correct": "Correct!",
+    "incorrect": "Incorrect",
+    "explanation": "Explanation",
+    "score": "Your Score",
+    "passed": "Passed!",
+    "failed": "Keep Studying",
+    "passScore": "72% to pass",
+    "simulation": "Full Simulation Exam",
+    "simulationDesc": "Timed, full-length exam simulating real exam conditions"
+  },
+  "premium": {
+    "locked": "Premium Feature",
+    "lockedDesc": "Upgrade to Premium to access flashcards, mini-exams, AI tutoring and full simulation exams.",
+    "upgradeNow": "Upgrade Now — $29.99/mo",
+    "unlockAll": "Unlock Everything"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "readyToStudy": "Ready to study today?",
+    "overallProgress": "Overall Progress",
+    "streak": "Day Streak",
+    "modulesCompleted": "Modules Completed",
+    "examsPassed": "Exams Passed",
+    "continueStudying": "Continue Studying",
+    "startNew": "Start New Exam",
+    "recentActivity": "Recent Activity",
+    "achievements": "Your Achievements"
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "users": "Users",
+    "subscriptions": "Subscriptions",
+    "content": "Content",
+    "metrics": "Metrics",
+    "totalUsers": "Total Users",
+    "activeSubscriptions": "Active Subscriptions",
+    "mrr": "Monthly Revenue",
+    "cancelAccount": "Cancel Account",
+    "suspendAccount": "Suspend Account",
+    "publishAlert": "Publish Alert",
+    "updateContent": "Update Content"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Done!",
+    "required": "This field is required",
+    "learnMore": "Learn more",
+    "viewAll": "View All",
+    "close": "Close"
+  },
+  "achievements": {
+    "firstModule": "First Steps",
+    "firstModuleDesc": "Completed your first module",
+    "streak3": "3-Day Streak",
+    "streak3Desc": "Studied 3 days in a row",
+    "halfway": "Halfway There",
+    "halfwayDesc": "Completed 50% of B&L exam",
+    "almostReady": "Almost Ready",
+    "almostReadyDesc": "80% overall prep complete",
+    "masterBL": "B&L Master",
+    "masterBLDesc": "Passed B&L simulation exam",
+    "licenseReady": "License Ready",
+    "licenseReadyDesc": "Both simulations passed with 80%+"
+  }
+}

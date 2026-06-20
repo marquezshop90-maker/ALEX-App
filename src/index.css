@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-navy-900 text-gray-100 font-sans antialiased;
+    min-height: 100dvh;
+  }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-navy-900; }
+  ::-webkit-scrollbar-thumb { @apply bg-navy-600 rounded-full; }
+}
+
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    @apply bg-alex-amber text-navy-900 font-bold py-3 px-6 rounded-xl
+           hover:bg-alex-amber-light active:scale-95
+           transition-all duration-200 cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply bg-navy-700 text-gray-100 font-semibold py-3 px-6 rounded-xl
+           border border-navy-600 hover:bg-navy-600
+           transition-all duration-200 cursor-pointer;
+  }
+  .btn-blue {
+    @apply bg-alex-blue text-white font-bold py-3 px-6 rounded-xl
+           hover:bg-blue-700 active:scale-95
+           transition-all duration-200 cursor-pointer;
+  }
+  .btn-danger {
+    @apply bg-alex-error text-white font-semibold py-3 px-6 rounded-xl
+           hover:bg-red-600 active:scale-95
+           transition-all duration-200 cursor-pointer;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-navy-800 border border-navy-700 rounded-2xl p-6;
+  }
+  .card-hover {
+    @apply card hover:border-alex-amber/40 hover:bg-navy-700
+           transition-all duration-200 cursor-pointer;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full bg-navy-700 border border-navy-600 rounded-xl px-4 py-3
+           text-gray-100 placeholder-gray-500
+           focus:outline-none focus:border-alex-amber focus:ring-1 focus:ring-alex-amber
+           transition-colors duration-200;
+  }
+  .label {
+    @apply block text-sm font-semibold text-gray-300 mb-2;
+  }
+
+  /* Badges */
+  .badge-free    { @apply bg-navy-700 text-gray-300 border border-navy-600 text-xs font-bold px-3 py-1 rounded-full; }
+  .badge-premium { @apply bg-alex-amber/20 text-alex-amber border border-alex-amber/40 text-xs font-bold px-3 py-1 rounded-full; }
+  .badge-admin   { @apply bg-alex-blue/20 text-blue-400 border border-blue-500/40 text-xs font-bold px-3 py-1 rounded-full; }
+
+  /* Progress bar */
+  .progress-bar {
+    @apply h-2 bg-navy-700 rounded-full overflow-hidden;
+  }
+  .progress-fill {
+    @apply h-full bg-alex-amber rounded-full transition-all duration-500;
+  }
+
+  /* Section divider */
+  .divider { @apply border-t border-navy-700; }
+
+  /* Premium lock overlay */
+  .premium-lock {
+    @apply relative overflow-hidden;
+  }
+  .premium-lock::after {
+    content: '';
+    @apply absolute inset-0 bg-navy-900/60 backdrop-blur-[2px] rounded-2xl;
+  }
+}
+
+@layer utilities {
+  .text-gradient-amber {
+    background: linear-gradient(135deg, #F59E0B, #FCD34D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-blue {
+    background: linear-gradient(135deg, #3B82F6, #60A5FA);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .glass {
+    backdrop-filter: blur(12px);
+    background: rgba(17, 24, 39, 0.8);
+  }
+}

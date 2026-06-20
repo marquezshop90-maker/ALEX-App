@@ -1,0 +1,142 @@
+{
+  "app": {
+    "name": "ALEX",
+    "tagline": "Achieve the EXam",
+    "description": "Preparación para el Examen de Licencia de Contratista General B en California"
+  },
+  "nav": {
+    "dashboard": "Panel Principal",
+    "modules": "Módulos",
+    "progress": "Mi Progreso",
+    "profile": "Mi Perfil",
+    "admin": "Panel Admin",
+    "signout": "Cerrar Sesión"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "register": "Crear Cuenta",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "fullName": "Nombre Completo",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "verifyEmail": "Por favor verifica tu correo antes de continuar.",
+    "verifyEmailSent": "¡Revisa tu bandeja de entrada! Te enviamos un correo de verificación.",
+    "loginBtn": "Iniciar Sesión",
+    "registerBtn": "Crear Cuenta Gratis",
+    "orContinueWith": "o continúa con"
+  },
+  "plans": {
+    "free": "Gratis",
+    "premium": "Premium",
+    "freeDesc": "Contenido de estudio para los 31 módulos",
+    "premiumDesc": "Acceso completo: flashcards, exámenes, tutor IA y reportes",
+    "price": "$29.99",
+    "perMonth": "/mes",
+    "upgrade": "Mejorar a Premium",
+    "current": "Plan Actual"
+  },
+  "exams": {
+    "bl": "Business & Law",
+    "trade": "Trade (Clase B)",
+    "blDesc": "100 preguntas · 2.5 horas · 72% para pasar",
+    "tradeDesc": "115 preguntas · 3.5 horas · 72% para pasar",
+    "selectExam": "Elige tu Examen",
+    "modules": "Módulos",
+    "startStudying": "Empezar a Estudiar"
+  },
+  "modules": {
+    "notStarted": "Sin Iniciar",
+    "inProgress": "En Progreso",
+    "completed": "Completado",
+    "lessons": "Lecciones",
+    "flashcards": "Flashcards",
+    "miniExam": "Mini Examen",
+    "startLesson": "Iniciar Lección",
+    "nextLesson": "Siguiente Lección",
+    "complete": "Completar Módulo",
+    "references": "Referencias Oficiales",
+    "lastUpdated": "Última revisión"
+  },
+  "exam": {
+    "start": "Iniciar Examen",
+    "submit": "Enviar Respuesta",
+    "next": "Siguiente Pregunta",
+    "finish": "Terminar Examen",
+    "question": "Pregunta",
+    "of": "de",
+    "timeLeft": "Tiempo Restante",
+    "correct": "¡Correcto!",
+    "incorrect": "Incorrecto",
+    "explanation": "Explicación",
+    "score": "Tu Puntuación",
+    "passed": "¡Aprobado!",
+    "failed": "Sigue Estudiando",
+    "passScore": "72% para aprobar",
+    "simulation": "Examen Simulado Completo",
+    "simulationDesc": "Examen cronometrado que simula las condiciones del examen real"
+  },
+  "premium": {
+    "locked": "Función Premium",
+    "lockedDesc": "Mejora a Premium para acceder a flashcards, mini-exámenes, tutoría con IA y exámenes simulados completos.",
+    "upgradeNow": "Mejorar Ahora — $29.99/mes",
+    "unlockAll": "Desbloquear Todo"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido de vuelta",
+    "readyToStudy": "¿Listo para estudiar hoy?",
+    "overallProgress": "Progreso General",
+    "streak": "Días Consecutivos",
+    "modulesCompleted": "Módulos Completados",
+    "examsPassed": "Exámenes Aprobados",
+    "continueStudying": "Continuar Estudiando",
+    "startNew": "Iniciar Nuevo Examen",
+    "recentActivity": "Actividad Reciente",
+    "achievements": "Tus Logros"
+  },
+  "admin": {
+    "title": "Panel de Administración",
+    "users": "Usuarios",
+    "subscriptions": "Suscripciones",
+    "content": "Contenido",
+    "metrics": "Métricas",
+    "totalUsers": "Total de Usuarios",
+    "activeSubscriptions": "Suscripciones Activas",
+    "mrr": "Ingresos Mensuales",
+    "cancelAccount": "Cancelar Cuenta",
+    "suspendAccount": "Suspender Cuenta",
+    "publishAlert": "Publicar Alerta",
+    "updateContent": "Actualizar Contenido"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "loading": "Cargando...",
+    "error": "Algo salió mal",
+    "success": "¡Listo!",
+    "required": "Este campo es obligatorio",
+    "learnMore": "Saber más",
+    "viewAll": "Ver Todo",
+    "close": "Cerrar"
+  },
+  "achievements": {
+    "firstModule": "Primeros Pasos",
+    "firstModuleDesc": "Completaste tu primer módulo",
+    "streak3": "Racha de 3 Días",
+    "streak3Desc": "Estudiaste 3 días seguidos",
+    "halfway": "A Medio Camino",
+    "halfwayDesc": "Completaste el 50% del examen B&L",
+    "almostReady": "Casi Listo",
+    "almostReadyDesc": "80% de preparación general completada",
+    "masterBL": "Maestro B&L",
+    "masterBLDesc": "Aprobaste el examen simulado B&L",
+    "licenseReady": "Listo para la Licencia",
+    "licenseReadyDesc": "Ambos simulacros aprobados con 80%+"
+  }
+}
