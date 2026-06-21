@@ -27,8 +27,8 @@ export default async function handler(req, res) {
       metadata: {
         user_id: userId,
       },
-      success_url: `${process.env.VITE_APP_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.VITE_APP_URL}/upgrade`,
+      success_url: `https://alexapp-rose.vercel.app/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://alexapp-rose.vercel.app/upgrade`,
       subscription_data: {
         metadata: {
           user_id: userId,
@@ -42,3 +42,4 @@ export default async function handler(req, res) {
     res.status(500).json({ error: err.message })
   }
 }
+
