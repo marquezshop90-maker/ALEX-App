@@ -119,7 +119,7 @@ export default function Dashboard() {
           <p className="text-gray-400 mt-1">{t('dashboard.readyToStudy')}</p>
         </div>
         {!isPremium() && (
-          <Link to="/profile"
+          <Link to="/upgrade"
             className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl
                        bg-alex-amber/10 border border-alex-amber/30 text-alex-amber
                        text-sm font-bold hover:bg-alex-amber/20 transition-all">
@@ -235,7 +235,7 @@ export default function Dashboard() {
                 Unlock flashcards, mini-exams, AI tutoring & full simulation exams.
               </p>
             </div>
-            <Link to="/profile" className="btn-primary flex-shrink-0 whitespace-nowrap">
+            <Link to="/upgrade" className="btn-primary flex-shrink-0 whitespace-nowrap">
               {t('premium.upgradeNow')}
             </Link>
           </div>
@@ -244,3 +244,4 @@ export default function Dashboard() {
     </div>
   )
 }
+
