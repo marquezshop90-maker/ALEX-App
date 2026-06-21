@@ -34,6 +34,7 @@ import SimulatedExam from './pages/exam/SimulatedExam'
 import SimulatedResults from './pages/exam/SimulatedResults'
 import Progress from './pages/Progress'
 import Profile from './pages/Profile'
+import Upgrade from './pages/Upgrade'
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard'
@@ -87,6 +88,7 @@ export default function App() {
               <Route path="/select"          element={<ExamSelect />} />
               <Route path="/progress"        element={<Progress />} />
               <Route path="/profile"         element={<Profile />} />
+              <Route path="/upgrade" element={<Upgrade />} />
 
               {/* Business & Law */}
               <Route path="/bl/modules"               element={<ModuleList examType="BL" />} />

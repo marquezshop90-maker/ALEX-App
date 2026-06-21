@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { supabase } from '../lib/supabase'
 import { User, Star, CheckCircle2, Crown, Calendar, Mail, LogOut, ChevronRight, Lock } from 'lucide-react'
@@ -27,27 +28,28 @@ const PLANS = {
 }
 
 export default function Profile() {
-  const { t, i18n }                       = useTranslation()
+  const { t, i18n }                              = useTranslation()
   const { user, profile, signOut, refreshProfile } = useAuthStore()
+  const navigate                                  = useNavigate()
   const isEs = i18n.language === 'ES'
 
-  const [subscription, setSubscription]   = useState(null)
-  const [loading,      setLoading]        = useState(true)
-  const [editName,     setEditName]       = useState(false)
-  const [newName,      setNewName]        = useState(profile?.full_name || '')
-  const [savingName,   setSavingName]     = useState(false)
+  const [subscription, setSubscription] = useState(null)
+  const [loading,      setLoading]      = useState(true)
+  const [editName,     setEditName]     = useState(false)
+  const [newName,      setNewName]      = useState(profile?.full_name || '')
+  const [savingName,   setSavingName]   = useState(false)
 
   // Password change state
-  const [showPwForm,  setShowPwForm]  = useState(false)
-  const [newPw,       setNewPw]       = useState('')
-  const [confirmPw,   setConfirmPw]   = useState('')
-  const [changingPw,  setChangingPw]  = useState(false)
+  const [showPwForm, setShowPwForm] = useState(false)
+  const [newPw,      setNewPw]      = useState('')
+  const [confirmPw,  setConfirmPw]  = useState('')
+  const [changingPw, setChangingPw] = useState(false)
 
-  const isPrem   = profile?.subscription_type === 'premium' && profile?.subscription_status === 'active'
-  const isTrial  = profile?.subscription_status === 'trialing'
-  const isAdmin  = profile?.role === 'super_admin'
-  const planKey  = (isPrem || isTrial || isAdmin) ? 'premium' : 'free'
-  const plan     = PLANS[planKey]
+  const isPrem  = profile?.subscription_type === 'premium' && profile?.subscription_status === 'active'
+  const isTrial = profile?.subscription_status === 'trialing'
+  const isAdmin = profile?.role === 'super_admin'
+  const planKey = (isPrem || isTrial || isAdmin) ? 'premium' : 'free'
+  const plan    = PLANS[planKey]
 
   useEffect(() => {
     const load = async () => {
@@ -124,8 +126,7 @@ export default function Profile() {
       {/* User info card */}
       <div className="card">
         <div className="flex items-center gap-4 mb-5">
-          <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black
-                          text-white flex-shrink-0"
+          <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-black text-white flex-shrink-0"
                style={{ background: 'linear-gradient(135deg, #1E40AF, #F59E0B)' }}>
             {profile?.full_name?.charAt(0)?.toUpperCase() || 'U'}
           </div>
@@ -134,10 +135,8 @@ export default function Profile() {
               <div className="flex items-center gap-2">
                 <input value={newName} onChange={e => setNewName(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && saveName()}
-                  className="input py-2 text-sm flex-1"
-                  autoFocus />
-                <button onClick={saveName} disabled={savingName}
-                  className="btn-primary py-2 px-3 text-xs">
+                  className="input py-2 text-sm flex-1" autoFocus />
+                <button onClick={saveName} disabled={savingName} className="btn-primary py-2 px-3 text-xs">
                   {savingName ? '...' : (isEs ? 'Guardar' : 'Save')}
                 </button>
                 <button onClick={() => setEditName(false)} className="btn-secondary py-2 px-3 text-xs">
@@ -161,12 +160,14 @@ export default function Profile() {
         </div>
 
         <div className="flex items-center gap-3">
-          {isAdmin && <span className="badge-admin flex items-center gap-1"><Crown size={10} /> Super Admin</span>}
+          {isAdmin && (
+            <span className="badge-admin flex items-center gap-1">
+              <Crown size={10} /> Super Admin
+            </span>
+          )}
           <span className={`text-xs font-bold px-3 py-1 rounded-full border ${plan.border} ${plan.bg} ${plan.color}`}>
             {isEs ? plan.nameEs : plan.name}
-            {isTrial && !isAdmin && (
-              <span className="ml-1 opacity-70">· Active</span>
-            )}
+            {isTrial && !isAdmin && <span className="ml-1 opacity-70">· Active</span>}
           </span>
         </div>
       </div>
@@ -180,9 +181,7 @@ export default function Profile() {
 
         <div className={`rounded-xl p-4 border mb-4 ${plan.border} ${plan.bg}`}>
           <div className="flex items-center justify-between mb-3">
-            <p className={`font-black text-lg ${plan.color}`}>
-              {isEs ? plan.nameEs : plan.name}
-            </p>
+            <p className={`font-black text-lg ${plan.color}`}>{isEs ? plan.nameEs : plan.name}</p>
             {(isPrem || isAdmin) && (
               <span className="text-xs text-alex-success font-bold">● Active</span>
             )}
@@ -209,14 +208,14 @@ export default function Profile() {
                 : 'Unlock flashcards, mini-exams, AI tutoring, and full simulation exams.'}
             </p>
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-3xl font-black text-alex-amber">$29.99</span>
+              <span className="text-3xl font-black text-alex-amber">$29.00</span>
               <span className="text-gray-400 text-sm">{isEs ? '/mes' : '/month'}</span>
             </div>
             <button
-              onClick={() => toast('Stripe integration coming soon!', { icon: '🚧' })}
+              onClick={() => navigate('/upgrade')}
               className="btn-primary w-full flex items-center justify-center gap-2">
               <Star size={16} fill="currentColor" />
-              {isEs ? 'Obtener Premium' : 'Get Premium — $29.99/mo'}
+              {isEs ? 'Ver Plan Premium' : 'See Premium Plan'}
             </button>
             <p className="text-gray-600 text-xs text-center mt-2">
               {isEs ? 'Cancela cuando quieras' : 'Cancel anytime'}
