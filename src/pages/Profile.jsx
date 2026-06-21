@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../store/authStore'
 import { supabase } from '../lib/supabase'
-import { User, Star, CheckCircle2, Crown, Calendar, Mail, LogOut, ChevronRight } from 'lucide-react'
+import { User, Star, CheckCircle2, Crown, Calendar, Mail, LogOut, ChevronRight, Lock } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const PLANS = {
@@ -29,7 +29,6 @@ const PLANS = {
 export default function Profile() {
   const { t, i18n }                       = useTranslation()
   const { user, profile, signOut, refreshProfile } = useAuthStore()
-  const navigate = () => window.history.back()
   const isEs = i18n.language === 'ES'
 
   const [subscription, setSubscription]   = useState(null)
@@ -37,6 +36,12 @@ export default function Profile() {
   const [editName,     setEditName]       = useState(false)
   const [newName,      setNewName]        = useState(profile?.full_name || '')
   const [savingName,   setSavingName]     = useState(false)
+
+  // Password change state
+  const [showPwForm,  setShowPwForm]  = useState(false)
+  const [newPw,       setNewPw]       = useState('')
+  const [confirmPw,   setConfirmPw]   = useState('')
+  const [changingPw,  setChangingPw]  = useState(false)
 
   const isPrem   = profile?.subscription_type === 'premium' && profile?.subscription_status === 'active'
   const isTrial  = profile?.subscription_status === 'trialing'
@@ -75,6 +80,28 @@ export default function Profile() {
     } finally {
       setSavingName(false)
     }
+  }
+
+  const changePassword = async () => {
+    if (!newPw || newPw.length < 6) {
+      toast.error(isEs ? 'Mínimo 6 caracteres' : 'Minimum 6 characters')
+      return
+    }
+    if (newPw !== confirmPw) {
+      toast.error(isEs ? 'Las contraseñas no coinciden' : 'Passwords do not match')
+      return
+    }
+    setChangingPw(true)
+    const { error } = await supabase.auth.updateUser({ password: newPw })
+    if (error) {
+      toast.error(isEs ? 'Error al cambiar contraseña' : 'Error changing password')
+    } else {
+      toast.success(isEs ? '¡Contraseña actualizada!' : 'Password updated!')
+      setShowPwForm(false)
+      setNewPw('')
+      setConfirmPw('')
+    }
+    setChangingPw(false)
   }
 
   const handleSignOut = async () => {
@@ -211,14 +238,49 @@ export default function Profile() {
       <div className="card space-y-1">
         <h2 className="font-bold text-white mb-3">{isEs ? 'Cuenta' : 'Account'}</h2>
 
+        {/* Change Password */}
         <button
-          onClick={() => toast(isEs ? 'Próximamente' : 'Coming soon', { icon: '🚧' })}
+          onClick={() => { setShowPwForm(!showPwForm); setNewPw(''); setConfirmPw('') }}
           className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-gray-300
                      hover:bg-navy-700 transition-all duration-200 text-sm">
-          <User size={16} className="text-gray-500" />
+          <Lock size={16} className="text-gray-500" />
           {isEs ? 'Cambiar contraseña' : 'Change Password'}
-          <ChevronRight size={14} className="ml-auto text-gray-600" />
+          <ChevronRight size={14} className={`ml-auto text-gray-600 transition-transform duration-200 ${showPwForm ? 'rotate-90' : ''}`} />
         </button>
+
+        {showPwForm && (
+          <div className="mx-3 mb-2 p-4 rounded-xl bg-navy-700/50 border border-navy-600 space-y-3">
+            <input
+              type="password"
+              placeholder={isEs ? 'Nueva contraseña' : 'New password'}
+              value={newPw}
+              onChange={e => setNewPw(e.target.value)}
+              className="input w-full text-sm"
+              autoFocus
+            />
+            <input
+              type="password"
+              placeholder={isEs ? 'Confirmar contraseña' : 'Confirm password'}
+              value={confirmPw}
+              onChange={e => setConfirmPw(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && changePassword()}
+              className="input w-full text-sm"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={changePassword}
+                disabled={changingPw || !newPw || !confirmPw}
+                className="btn-primary flex-1 py-2 text-sm disabled:opacity-50">
+                {changingPw ? '...' : (isEs ? 'Guardar contraseña' : 'Save Password')}
+              </button>
+              <button
+                onClick={() => { setShowPwForm(false); setNewPw(''); setConfirmPw('') }}
+                className="btn-secondary px-4 py-2 text-sm">
+                {isEs ? 'Cancelar' : 'Cancel'}
+              </button>
+            </div>
+          </div>
+        )}
 
         <button
           onClick={handleSignOut}
