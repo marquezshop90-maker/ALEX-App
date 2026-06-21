@@ -1,8 +1,6 @@
-import Stripe from 'stripe'
+const Stripe = require('stripe')
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
@@ -14,6 +12,8 @@ export default async function handler(req, res) {
   }
 
   try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
@@ -24,22 +24,17 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      metadata: {
-        user_id: userId,
-      },
-      success_url: `https://alexapp-rose.vercel.app/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://alexapp-rose.vercel.app/upgrade`,
+      metadata: { user_id: userId },
+      success_url: 'https://alexapp-rose.vercel.app/payment-success?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'https://alexapp-rose.vercel.app/upgrade',
       subscription_data: {
-        metadata: {
-          user_id: userId,
-        },
+        metadata: { user_id: userId },
       },
     })
 
     res.status(200).json({ url: session.url })
   } catch (err) {
-    console.error('Stripe checkout error:', err)
+    console.error('Stripe error:', err.message)
     res.status(500).json({ error: err.message })
   }
 }
-
