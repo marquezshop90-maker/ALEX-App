@@ -4,68 +4,26 @@ import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../store/authStore'
 import {
   CheckCircle2, Star, Zap, BookOpen, Brain,
-  BarChart2, Shield, Heart, ArrowLeft, Sparkles, Clock
+  BarChart2, Shield, Heart, ArrowLeft, Sparkles, Clock, Loader2
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 const FEATURES = [
-  {
-    icon: BookOpen,
-    title: 'Interactive Flashcards',
-    titleEs: 'Flashcards Interactivas',
-    desc: 'Memorize key concepts with spaced-repetition flashcards for all 31 modules.',
-    descEs: 'Memoriza conceptos clave con flashcards de repetición espaciada para los 31 módulos.',
-    color: 'text-blue-400', bg: 'bg-blue-400/10',
-  },
-  {
-    icon: Zap,
-    title: 'Mini-Exams per Module',
-    titleEs: 'Mini-Exámenes por Módulo',
-    desc: 'Test your knowledge after each module with targeted practice questions.',
-    descEs: 'Pon a prueba tus conocimientos después de cada módulo con preguntas de práctica.',
-    color: 'text-amber-400', bg: 'bg-amber-400/10',
-  },
-  {
-    icon: Brain,
-    title: 'AI Study Tips',
-    titleEs: 'Consejos de Estudio con IA',
-    desc: 'Get personalized AI-powered tips based on your weak areas after each exam.',
-    descEs: 'Obtén consejos personalizados con IA basados en tus áreas débiles después de cada examen.',
-    color: 'text-purple-400', bg: 'bg-purple-400/10',
-  },
-  {
-    icon: Shield,
-    title: 'Full Simulation Exams',
-    titleEs: 'Exámenes Simulados Completos',
-    desc: 'Take full-length timed exams that mirror the real CSLB test experience.',
-    descEs: 'Toma exámenes cronometrados que replican la experiencia real del CSLB.',
-    color: 'text-green-400', bg: 'bg-green-400/10',
-  },
-  {
-    icon: BarChart2,
-    title: 'Performance Analytics',
-    titleEs: 'Análisis de Rendimiento',
-    desc: 'Track your progress, streaks, and identify weak areas across all modules.',
-    descEs: 'Rastrea tu progreso, rachas e identifica áreas débiles en todos los módulos.',
-    color: 'text-red-400', bg: 'bg-red-400/10',
-  },
-  {
-    icon: Star,
-    title: 'All 31 Study Modules',
-    titleEs: 'Los 31 Módulos de Estudio',
-    desc: 'Complete coverage of Business & Law and Trade (Class B) exam content.',
-    descEs: 'Cobertura completa del examen de Business & Law y Trade (Clase B).',
-    color: 'text-alex-amber', bg: 'bg-alex-amber/10',
-  },
+  { icon: BookOpen, title: 'Interactive Flashcards',   titleEs: 'Flashcards Interactivas',     desc: 'Memorize key concepts for all 31 modules.',             descEs: 'Memoriza conceptos clave para los 31 módulos.',           color: 'text-blue-400',   bg: 'bg-blue-400/10' },
+  { icon: Zap,      title: 'Mini-Exams per Module',    titleEs: 'Mini-Exámenes por Módulo',    desc: 'Targeted practice questions after each module.',        descEs: 'Preguntas de práctica después de cada módulo.',           color: 'text-amber-400',  bg: 'bg-amber-400/10' },
+  { icon: Brain,    title: 'AI Study Tips',            titleEs: 'Consejos de Estudio con IA', desc: 'Personalized tips based on your weak areas.',           descEs: 'Consejos personalizados según tus áreas débiles.',        color: 'text-purple-400', bg: 'bg-purple-400/10' },
+  { icon: Shield,   title: 'Full Simulation Exams',    titleEs: 'Exámenes Simulados',          desc: 'Full-length timed exams mirroring the real CSLB test.', descEs: 'Exámenes cronometrados que replican el CSLB real.',       color: 'text-green-400',  bg: 'bg-green-400/10' },
+  { icon: BarChart2,title: 'Performance Analytics',    titleEs: 'Análisis de Rendimiento',     desc: 'Track progress and identify weak areas.',               descEs: 'Rastrea tu progreso e identifica áreas débiles.',         color: 'text-red-400',    bg: 'bg-red-400/10' },
+  { icon: Star,     title: 'All 31 Study Modules',     titleEs: 'Los 31 Módulos de Estudio',   desc: 'Business & Law and Trade (Class B) full coverage.',     descEs: 'Cobertura completa de Business & Law y Trade Clase B.',   color: 'text-alex-amber', bg: 'bg-alex-amber/10' },
 ]
 
 export default function Upgrade() {
   const { i18n } = useTranslation()
-  const { profile } = useAuthStore()
+  const { user, profile, isPremium } = useAuthStore()
   const navigate = useNavigate()
   const isEs = i18n.language === 'ES'
-
   const [daysLeft, setDaysLeft] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (profile?.trial_ends_at) {
@@ -76,26 +34,37 @@ export default function Upgrade() {
     }
   }, [profile])
 
-  const isPremium = profile?.subscription_type === 'premium' || profile?.role === 'super_admin'
-  const isTrial = daysLeft !== null && daysLeft > 0 && isPremium
+  const isFullPremium = isPremium() && !profile?.trial_ends_at
+  const isTrial = daysLeft !== null && daysLeft > 0 && isPremium()
 
-  const handleUpgrade = () => {
-    toast(
-      isEs
-        ? '¡Pagos llegando pronto! Te notificaremos cuando estén activos.'
-        : 'Payments coming soon! We will notify you when live.',
-      { icon: '🚧', duration: 4000 }
-    )
+  const handleCheckout = async () => {
+    if (!user) { navigate('/login'); return }
+    setLoading(true)
+    try {
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, email: user.email }),
+      })
+      const data = await res.json()
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error(data.error || 'No URL returned')
+      }
+    } catch (err) {
+      console.error(err)
+      toast.error(isEs ? 'Error al procesar el pago' : 'Payment error. Please try again.')
+      setLoading(false)
+    }
   }
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-fade-in pb-12">
 
       {/* Back */}
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm"
-      >
+      <button onClick={() => navigate(-1)}
+        className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm">
         <ArrowLeft size={16} />
         {isEs ? 'Volver' : 'Back'}
       </button>
@@ -107,13 +76,13 @@ export default function Upgrade() {
           <div>
             <p className="font-bold text-white text-sm">
               {isEs
-                ? `Tu prueba gratuita termina en ${daysLeft} día${daysLeft === 1 ? '' : 's'}`
-                : `Your free trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'}`}
+                ? `⏳ Tu prueba Premium termina en ${daysLeft} día${daysLeft === 1 ? '' : 's'}`
+                : `⏳ Your Premium trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'}`}
             </p>
             <p className="text-orange-300 text-xs mt-0.5">
               {isEs
-                ? 'Haz upgrade ahora para no perder tu acceso Premium.'
-                : 'Upgrade now to keep your Premium access.'}
+                ? 'Haz upgrade ahora para no perder tu acceso completo.'
+                : 'Upgrade now to keep your full access.'}
             </p>
           </div>
         </div>
@@ -137,8 +106,6 @@ export default function Upgrade() {
 
       {/* Price card */}
       <div className="card border border-alex-amber/30 bg-alex-amber/5 text-center">
-
-        {/* Badge */}
         <div className="inline-flex items-center gap-1.5 bg-alex-amber/20 text-alex-amber text-xs font-bold px-3 py-1 rounded-full mb-4">
           <Star size={11} fill="currentColor" />
           {isEs ? 'Mejor valor · Solo $3.75/mes' : 'Best value · Only $3.75/mo'}
@@ -150,36 +117,37 @@ export default function Upgrade() {
         </div>
         <p className="text-gray-500 text-sm mb-6">
           {isEs
-            ? 'Acceso completo por 12 meses · Cancela cuando quieras · Sin contratos'
-            : 'Full access for 12 months · Cancel anytime · No contracts'}
+            ? 'Acceso completo por 12 meses · Cancela cuando quieras'
+            : 'Full access for 12 months · Cancel anytime'}
         </p>
 
-        {isPremium && !isTrial ? (
+        {isFullPremium ? (
           <div className="flex items-center justify-center gap-2 text-green-400 font-bold">
             <CheckCircle2 size={20} />
             {isEs ? '¡Ya eres Premium!' : "You're already Premium!"}
           </div>
         ) : (
           <button
-            onClick={handleUpgrade}
-            className="btn-primary w-full py-4 text-base font-bold flex items-center justify-center gap-2"
+            onClick={handleCheckout}
+            disabled={loading}
+            className="btn-primary w-full py-4 text-base font-bold flex items-center justify-center gap-2 disabled:opacity-70"
           >
-            <Star size={18} fill="currentColor" />
-            {isEs ? 'Obtener Premium — $45/año' : 'Get Premium — $45/year'}
+            {loading
+              ? <><Loader2 size={18} className="animate-spin" /> {isEs ? 'Redirigiendo...' : 'Redirecting...'}</>
+              : <><Star size={18} fill="currentColor" /> {isEs ? 'Obtener Premium — $45/año' : 'Get Premium — $45/year'}</>
+            }
           </button>
         )}
 
         <p className="text-gray-600 text-xs mt-3">
-          {isEs
-            ? '🔒 Pago seguro · Acceso inmediato después del pago'
-            : '🔒 Secure payment · Instant access after payment'}
+          🔒 {isEs ? 'Pago seguro con Stripe · Acceso inmediato' : 'Secure payment with Stripe · Instant access'}
         </p>
       </div>
 
-      {/* Comparison free vs premium */}
+      {/* Free vs Premium comparison */}
       <div className="card overflow-hidden p-0">
         <div className="grid grid-cols-3 text-center">
-          <div className="p-4 border-b border-navy-700 col-span-1" />
+          <div className="p-4 border-b border-navy-700" />
           <div className="p-4 border-b border-l border-navy-700 bg-navy-700/30">
             <p className="text-gray-400 font-bold text-sm">{isEs ? 'Gratis' : 'Free'}</p>
           </div>
@@ -188,23 +156,21 @@ export default function Upgrade() {
           </div>
         </div>
         {[
-          { feature: isEs ? '31 lecciones de estudio' : '31 study lessons', free: true, premium: true },
-          { feature: isEs ? 'Referencias oficiales' : 'Official references', free: true, premium: true },
-          { feature: isEs ? 'Bilingüe EN / ES' : 'Bilingual EN / ES', free: true, premium: true },
-          { feature: isEs ? 'Flashcards interactivas' : 'Interactive flashcards', free: false, premium: true },
-          { feature: isEs ? 'Mini-exámenes' : 'Mini-exams', free: false, premium: true },
-          { feature: isEs ? 'Consejos con IA' : 'AI study tips', free: false, premium: true },
-          { feature: isEs ? 'Exámenes simulados' : 'Simulation exams', free: false, premium: true },
-          { feature: isEs ? 'Análisis de rendimiento' : 'Performance analytics', free: false, premium: true },
+          { feature: isEs ? '31 lecciones de estudio' : '31 study lessons',        free: true,  premium: true },
+          { feature: isEs ? 'Referencias oficiales'   : 'Official references',      free: true,  premium: true },
+          { feature: isEs ? 'Bilingüe EN / ES'        : 'Bilingual EN / ES',        free: true,  premium: true },
+          { feature: isEs ? 'Flashcards interactivas' : 'Interactive flashcards',   free: false, premium: true },
+          { feature: isEs ? 'Mini-exámenes'           : 'Mini-exams',               free: false, premium: true },
+          { feature: isEs ? 'Consejos con IA'         : 'AI study tips',            free: false, premium: true },
+          { feature: isEs ? 'Exámenes simulados'      : 'Simulation exams',         free: false, premium: true },
+          { feature: isEs ? 'Análisis de rendimiento' : 'Performance analytics',    free: false, premium: true },
         ].map((row, i) => (
           <div key={i} className="grid grid-cols-3 text-center border-b border-navy-700 last:border-0">
             <div className="p-3 text-left">
               <p className="text-gray-300 text-xs">{row.feature}</p>
             </div>
             <div className="p-3 border-l border-navy-700 flex items-center justify-center">
-              {row.free
-                ? <CheckCircle2 size={16} className="text-green-400" />
-                : <span className="text-gray-600 text-lg">—</span>}
+              {row.free ? <CheckCircle2 size={16} className="text-green-400" /> : <span className="text-gray-600">—</span>}
             </div>
             <div className="p-3 border-l border-navy-700 bg-alex-amber/5 flex items-center justify-center">
               <CheckCircle2 size={16} className="text-alex-amber" />
@@ -213,32 +179,25 @@ export default function Upgrade() {
         ))}
       </div>
 
-      {/* Features grid */}
-      <div>
-        <h2 className="text-xl font-bold text-white mb-4">
-          {isEs ? 'Todo lo que incluye Premium' : "Everything in Premium"}
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {FEATURES.map((f) => {
-            const Icon = f.icon
-            return (
-              <div key={f.title} className="card flex gap-3 items-start">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${f.bg}`}>
-                  <Icon size={16} className={f.color} />
-                </div>
-                <div>
-                  <p className="font-bold text-white text-sm">{isEs ? f.titleEs : f.title}</p>
-                  <p className="text-gray-400 text-xs mt-0.5 leading-relaxed">
-                    {isEs ? f.descEs : f.desc}
-                  </p>
-                </div>
+      {/* Features */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {FEATURES.map((f) => {
+          const Icon = f.icon
+          return (
+            <div key={f.title} className="card flex gap-3 items-start">
+              <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${f.bg}`}>
+                <Icon size={16} className={f.color} />
               </div>
-            )
-          })}
-        </div>
+              <div>
+                <p className="font-bold text-white text-sm">{isEs ? f.titleEs : f.title}</p>
+                <p className="text-gray-400 text-xs mt-0.5 leading-relaxed">{isEs ? f.descEs : f.desc}</p>
+              </div>
+            </div>
+          )
+        })}
       </div>
 
-      {/* Community support message */}
+      {/* Community message */}
       <div className="card border border-blue-500/20 bg-blue-500/5">
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center flex-shrink-0">
@@ -250,8 +209,8 @@ export default function Upgrade() {
             </p>
             <p className="text-gray-400 text-sm leading-relaxed">
               {isEs
-                ? 'ALEX es parte de una misión más grande: construir herramientas accesibles para contratistas latinos en los Estados Unidos. Creemos que el acceso a la información no debe costar una fortuna. Tu suscripción de $45 al año nos ayuda a mantener la app y seguir desarrollando herramientas gratuitas para que más personas en nuestra comunidad puedan obtener sus licencias, crecer y construir negocios exitosos. Gracias por apoyar este proyecto.'
-                : 'ALEX is part of a bigger mission: building accessible tools for Latino contractors in the United States. We believe access to knowledge should not cost a fortune. Your $45/year subscription helps us keep the app running and continue developing free tools so more people in our community can get their licenses, grow, and build successful businesses. Thank you for supporting this.'}
+                ? 'ALEX es parte de una misión más grande: construir herramientas accesibles para contratistas latinos en los Estados Unidos. Creemos que el acceso a la información no debe costar una fortuna. Tu suscripción de $45 al año nos ayuda a mantener la app y seguir desarrollando herramientas gratuitas para que más personas en nuestra comunidad puedan obtener sus licencias y construir negocios exitosos. Gracias por apoyar este proyecto.'
+                : 'ALEX is part of a bigger mission: building accessible tools for Latino contractors in the United States. We believe access to knowledge should not cost a fortune. Your $45/year subscription helps us keep this app running and continue building free tools so more people in our community can get their licenses and build successful businesses. Thank you for supporting this.'}
             </p>
             <p className="text-blue-400 text-sm font-medium mt-3">
               — Deybi Marquez, {isEs ? 'Fundador' : 'Founder'} · Marquez Project Solutions LLC
@@ -262,33 +221,19 @@ export default function Upgrade() {
 
       {/* FAQ */}
       <div className="card space-y-4">
-        <h2 className="font-bold text-white">
-          {isEs ? 'Preguntas frecuentes' : 'Frequently asked questions'}
-        </h2>
+        <h2 className="font-bold text-white">{isEs ? 'Preguntas frecuentes' : 'FAQ'}</h2>
         {[
           {
-            q: isEs ? '¿Cuándo se activan los pagos?' : 'When will payments be available?',
-            a: isEs
-              ? 'Estamos integrando el sistema de pago ahora mismo. Te notificaremos por email tan pronto esté listo. Mientras tanto, disfruta tu acceso gratuito.'
-              : 'We are integrating the payment system right now. We will notify you by email as soon as it is ready. In the meantime, enjoy your free access.',
+            q: isEs ? '¿Es seguro el pago?' : 'Is the payment secure?',
+            a: isEs ? 'Sí. Los pagos son procesados por Stripe, la plataforma de pagos más segura del mundo. Nunca almacenamos tu información de tarjeta.' : 'Yes. Payments are processed by Stripe, the world\'s most trusted payment platform. We never store your card information.',
           },
           {
-            q: isEs ? '¿Puedo cancelar en cualquier momento?' : 'Can I cancel at any time?',
-            a: isEs
-              ? 'Sí. Puedes cancelar tu suscripción en cualquier momento sin penalidades. Mantendrás el acceso premium hasta el final del año pagado.'
-              : 'Yes. You can cancel your subscription at any time with no penalties. You keep premium access until the end of your paid year.',
+            q: isEs ? '¿Puedo cancelar en cualquier momento?' : 'Can I cancel anytime?',
+            a: isEs ? 'Sí. Puedes cancelar tu suscripción sin penalidades. Mantendrás acceso premium hasta el final del año pagado.' : 'Yes. You can cancel your subscription with no penalties. You keep premium access until the end of your paid year.',
           },
           {
-            q: isEs ? '¿Cuánto tiempo tarda la preparación?' : 'How long does exam prep take?',
-            a: isEs
-              ? 'La mayoría de los estudiantes completan la preparación en 4-8 semanas estudiando 1-2 horas por día. Con $45 tienes un año completo — tiempo de sobra.'
-              : 'Most students complete exam prep in 4-8 weeks studying 1-2 hours per day. With $45 you get a full year — more than enough time.',
-          },
-          {
-            q: isEs ? '¿Está disponible en español?' : 'Is it available in Spanish?',
-            a: isEs
-              ? 'Sí. Toda la app — lecciones, flashcards, preguntas y exámenes — está disponible en inglés y español.'
-              : 'Yes. The entire app — lessons, flashcards, questions and exams — is available in both English and Spanish.',
+            q: isEs ? '¿Cuánto tiempo tarda la preparación?' : 'How long does prep take?',
+            a: isEs ? 'La mayoría completa la preparación en 4-8 semanas. Con $45 tienes un año completo.' : 'Most students complete prep in 4-8 weeks. With $45 you get a full year.',
           },
         ].map((item, i) => (
           <div key={i} className="border-b border-navy-700 last:border-0 pb-4 last:pb-0">
@@ -299,13 +244,16 @@ export default function Upgrade() {
       </div>
 
       {/* Bottom CTA */}
-      {!isPremium && (
+      {!isFullPremium && (
         <button
-          onClick={handleUpgrade}
-          className="btn-primary w-full py-4 text-base font-bold flex items-center justify-center gap-2"
+          onClick={handleCheckout}
+          disabled={loading}
+          className="btn-primary w-full py-4 text-base font-bold flex items-center justify-center gap-2 disabled:opacity-70"
         >
-          <Star size={18} fill="currentColor" />
-          {isEs ? 'Obtener Premium — $45/año' : 'Get Premium — $45/year'}
+          {loading
+            ? <><Loader2 size={18} className="animate-spin" /> {isEs ? 'Redirigiendo...' : 'Redirecting...'}</>
+            : <><Star size={18} fill="currentColor" /> {isEs ? 'Obtener Premium — $45/año' : 'Get Premium — $45/year'}</>
+          }
         </button>
       )}
     </div>
